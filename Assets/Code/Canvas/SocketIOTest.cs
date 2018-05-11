@@ -31,16 +31,6 @@ public class SocketIOTest : MonoBehaviour
         ResultState,
     }
 
-    public enum ScenarioEvent
-    {
-        userLogin,
-        userCreate,
-        userNickSet,
-        roomMatching,
-        roomJoin,
-        gameReady,
-    }
-
     private StateMachine<ScenarioStates> m_fsm;
 
     string m_szUserId;
@@ -57,14 +47,7 @@ public class SocketIOTest : MonoBehaviour
         SocketIOManager.GetManager().Create(m_ConnectUrl + "/socket.io/");
         SocketIOManager.GetManager().On(SocketIOEventTypes.Connect, OnConnect);
 
-        SocketIOManager.GetManager().On(ScenarioEvent.userLogin.ToString(), OnLogin);
-        SocketIOManager.GetManager().On(ScenarioEvent.userCreate.ToString(), OnUserCreate);
-        SocketIOManager.GetManager().On(ScenarioEvent.userNickSet.ToString(), OnUserNickSet);
-        SocketIOManager.GetManager().On(ScenarioEvent.roomMatching.ToString(), OnRoomMatching);
-        SocketIOManager.GetManager().On(ScenarioEvent.roomJoin.ToString(), OnRoomJoin);
-        SocketIOManager.GetManager().On(ScenarioEvent.gameReady.ToString(), OnGameReady);
-
-
+        SocketIOManager.GetManager().On("login", OnLogin);
         SocketIOManager.GetManager().On("lobby", OnLobby);
         SocketIOManager.GetManager().On("garage", OnGarage);
         SocketIOManager.GetManager().On("room", OnRoom);
@@ -106,7 +89,7 @@ public class SocketIOTest : MonoBehaviour
         Dictionary<string, object> loginData = new Dictionary<string, object>();
         loginData.Add("userid", m_szUserId);
         loginData.Add("name", m_szNickName);
-        SocketIOManager.GetManager().Emit(ScenarioEvent.userLogin.ToString(), loginData);
+        SocketIOManager.GetManager().Emit("login", loginData);
     }
 
     void OnLogin(Socket socket, Packet packet, params object[] args)
